@@ -219,22 +219,28 @@ class DFA:
   
   def view(self, fileName: str):
     dot = Digraph(name=fileName, format='png')
-    
+
     dot.graph_attr['rankdir'] = 'LR'
-    
+
     dot.node("", "", shape='plaintext')
-    
+
+    q_indices = range(len(self.Q))
+    q_to_small_dict = {}
+
+    for i in range(len(self.Q)):
+      q_to_small_dict[list(self.Q)[i]] = str(f'q{q_indices[i]}')
+
     for f in self.F:
-      dot.node(f, f, shape='doublecircle')
-    
+      dot.node(f, q_to_small_dict[f], shape='doublecircle')
+
     for q in self.Q:
       if q not in self.F:
-        dot.node(q, q, shape='circle')
-    
+        dot.node(q, q_to_small_dict[q], shape='circle')
+
     dot.edge("", self.initialState, label="")
-    
+
     for q in self.delta:
       for s in self.delta[q]:
         dot.edge(q, self.delta[q][s], label=s)
-    
+
     dot.render()
